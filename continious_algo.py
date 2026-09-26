@@ -38,7 +38,15 @@ class ORB_CODE:
 
                 if current_time=='09:15':
                     orb_candle.append(datas)
-        print(orb_candle)
+        for orb in orb_candle:
+            orb_high=orb['HIGH']
+            orb_low=orb['LOW']
+
+
+
+        original_closing_prices=master_closed_data[-1]
+        print(original_closing_prices)
+        
                     
 
             
