@@ -45,8 +45,54 @@ class ORB_CODE:
 
 
         original_closing_prices=master_closed_data[-1]
-        print(original_closing_prices)
-        
+        for data in main_data:
+            data_close=data['CLOSE']
+            data_open=data['OPEN']
+            data_date=data['DATE']
+            data_time=data['TIME']
+            if current_date==data_date:
+                if data_close==original_closing_prices:
+
+                    if data_close<data_open:
+                        first_red_candle=[]
+                        for candles in main_data:
+                            candle_close=candles['CLOSE']
+                            candle_open=candles['OPEN']
+                            candle_date=candles['DATE']
+                            candle_time=candles['TIME']
+                            if candle_date==current_date:
+                                if original_closing_prices==candle_close:
+
+                                    if candle_close<candle_open:
+                                        first_red_candle.append(candles)
+                                        first_value_red_candle=first_red_candle[-1]
+
+
+                        if first_value_red_candle is not None:
+                            first_value_red_candle_close=first_value_red_candle['CLOSE']
+                            first_value_red_candle_time=first_value_red_candle['TIME']
+                            first_value_red_candle_low=first_value_red_candle['LOW']
+                            first_value_red_candle_open=first_value_red_candle['OPEN']
+
+
+
+
+                        ###################  TO FIND THE CONSOLIDATION LEVELS ########################
+                        for new_candles in main_data:
+                            new_close=new_candles['CLOSE']
+                            new_open=new_candles['OPEN']
+                            new_date=new_candles['DATE']
+                            new_low=new_candles['LOW']
+                            if new_date==latest_date:
+                                if new_close==first_value_red_candle_close or first_value_red_candle_low==new_low or first_value_red_candle_low==new_close or new_open<=first_value_red_candle_open and new_close<=first_value_red_candle_open and new_open>first_value_red_candle_close or new_open<=first_value_red_candle_close and new_close<=first_value_red_candle_open:
+
+
+
+                                    print(new_candles)
+
+
+                                
+
                     
 
             
