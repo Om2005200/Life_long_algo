@@ -90,12 +90,13 @@ class ORB_CODE:
 
 
                                     consolidation_candle.append(new_candles)
-                    if data_close>data_open:
+                   
 
 
-
-
+   ############ GREEN_CANDLES #########
                         ######################################## RETEST CANDLE ##########################
+
+                    elif data_close>data_open:
                         retest_candle=[]
                         for second_level in main_data:
                             second_date=second_level['DATE']
@@ -113,6 +114,34 @@ class ORB_CODE:
                                         if second_low<=orb_low and second_close>orb_low    or second_low<=orb_high and second_close>orb_high:
                                             print(second_level)
                                             retest_candle.append(second_level)
+
+
+                        ###########################################  LIQUIDITY SWEEP CANDLES ##############
+
+
+                        third_level_green_candle=[]
+                        for third_level_candle in main_data:
+                            third_level_close=third_level_candle['CLOSE']
+                            third_level_open=third_level_candle['OPEN']
+                            third_level_date=third_level_candle['DATE']
+                            third_level_time=third_level_candle['TIME']
+                            third_level_low=third_level_candle['LOW']
+                            third_level_high=third_level_candle['HIGH']
+
+                            if current_date==third_level_date:
+                                if third_level_close==original_closing_prices:
+
+                                    if third_level_close>third_level_open:
+                                        open_low=third_level_open-third_level_low
+                                        open_close=third_level_close-third_level_open
+                                        high_close=third_level_high-third_level_close
+
+
+                                        
+                                        if open_low>open_close and open_close>high_close:
+                                            third_level_green_candle.append(third_level_candle)
+                                            print(third_level_candle)
+
                             
 
                                 
