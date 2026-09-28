@@ -24,7 +24,7 @@ class ORB_CODE:
         master_closed_data=[]
         orb_candle=[]
 
-        latest_date="2026-09-17"
+        latest_date="2026-09-23"
         for datas in main_data:
             current_close=datas['CLOSE']
             current_open=datas['OPEN']
@@ -78,6 +78,7 @@ class ORB_CODE:
 
 
                         ###################  TO FIND THE CONSOLIDATION LEVELS ########################
+                        consolidation_candle=[]
                         for new_candles in main_data:
                             new_close=new_candles['CLOSE']
                             new_open=new_candles['OPEN']
@@ -88,8 +89,31 @@ class ORB_CODE:
 
 
 
-                                    print(new_candles)
+                                    consolidation_candle.append(new_candles)
+                    if data_close>data_open:
 
+
+
+
+                        ######################################## RETEST CANDLE ##########################
+                        retest_candle=[]
+                        for second_level in main_data:
+                            second_date=second_level['DATE']
+                            second_open=second_level['OPEN']
+                            second_close=second_level['CLOSE']
+                            second_time=second_level['TIME']
+                            second_low=second_level['LOW']
+                            second_high=second_level['HIGH']
+
+
+
+                            if second_date==current_date:
+                                if original_closing_prices==second_close:
+                                    if second_close>second_open:
+                                        if second_low<=orb_low and second_close>orb_low    or second_low<=orb_high and second_close>orb_high:
+                                            print(second_level)
+                                            retest_candle.append(second_level)
+                            
 
                                 
 
