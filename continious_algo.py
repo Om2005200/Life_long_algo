@@ -24,7 +24,7 @@ class ORB_CODE:
         master_closed_data=[]
         orb_candle=[]
 
-        latest_date="2026-09-23"
+        latest_date="2026-09-30"
         for datas in main_data:
             current_close=datas['CLOSE']
             current_open=datas['OPEN']
@@ -111,8 +111,8 @@ class ORB_CODE:
                             if second_date==current_date:
                                 if original_closing_prices==second_close:
                                     if second_close>second_open:
-                                        if second_low<=orb_low and second_close>orb_low    or second_low<=orb_high and second_close>orb_high:
-                                            print(second_level)
+                                        if second_low<=orb_low and second_close>orb_low    or second_low<=orb_high and second_close>orb_high and second_open>orb_high:
+                                            #print(second_level)
                                             retest_candle.append(second_level)
 
 
@@ -140,7 +140,69 @@ class ORB_CODE:
                                         
                                         if open_low>open_close and open_close>high_close:
                                             third_level_green_candle.append(third_level_candle)
-                                            print(third_level_candle)
+                                            #print(third_level_candle)
+
+
+                        fourth_level_candle_breakout=[]
+                        fourth_level_candle_retest=[]
+
+
+                        for retest_candle_ in main_data:
+                            retest_candle_close=retest_candle_['CLOSE']
+                            retest_candle_open=retest_candle_['OPEN']
+                            retest_candle_date=retest_candle_['DATE']
+                            retest_candle_high=retest_candle_['HIGH']
+                            retest_candle_low=retest_candle_['LOW']
+                            if current_date==retest_candle_date:
+                                if retest_candle_close==original_closing_prices:
+
+                                    if retest_candle_close>retest_candle_open:
+                                        if retest_candle_open==orb_high and retest_candle_close>orb_high or retest_candle_close>orb_high and retest_candle_open>orb_high and retest_candle_low<orb_high:
+                                            fourth_level_candle_retest.append(retest_candle_)
+                        if fourth_level_candle_retest:
+                            for levels in fourth_level_candle_retest:
+
+                                fourth_time=levels['TIME']
+                        else:
+                            print('NOT A VALID SETUP')
+                            return
+
+                        
+                        for fourth_level_candle in main_data:
+                            fourth_level_candle_close=fourth_level_candle['CLOSE']
+                            fourth_level_candle_open=fourth_level_candle['OPEN']
+                            fourth_level_candle_date=fourth_level_candle['DATE']
+                            fourth_level_candle_time=fourth_level_candle['TIME']
+                            fourth_level_candle_low=fourth_level_candle['LOW']
+                            fourth_level_candle_high=fourth_level_candle['HIGH']
+                            if current_date==fourth_level_candle_date:
+                                    if fourth_level_candle_time<fourth_time:
+                                        
+
+                                
+                                        if fourth_level_candle_close>fourth_level_candle_open:
+                                            if fourth_level_candle_close>orb_high and fourth_level_candle_open<orb_high:
+                                                fourth_level_candle_breakout.append(fourth_level_candle)
+
+                                                only_candle=fourth_level_candle_breakout[-1]
+
+
+                        if only_candle is not None:
+                            print(only_candle)
+                            
+
+
+                        
+                                            
+                                    
+
+                            
+
+
+
+
+
+                
 
                             
 
