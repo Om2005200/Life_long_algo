@@ -9,7 +9,7 @@ import time
 
 class ORB_CODE:
     def __init__(self):
-        pass
+        self.latest_date="2026-10-26"
 
 
     def opening_the_raw_file(self):
@@ -18,13 +18,14 @@ class ORB_CODE:
             return data
 
 
-
+    
     def analyzing_the_data(self):
         main_data=self.opening_the_raw_file()
-        master_closed_data=[]
+       
         orb_candle=[]
+        master_closed_data=[]
 
-        latest_date="2026-09-30"
+        
         for datas in main_data:
             current_close=datas['CLOSE']
             current_open=datas['OPEN']
@@ -33,7 +34,7 @@ class ORB_CODE:
             current_low=datas['LOW']
             current_high=datas['HIGH']
             master_closed_data.append(current_close)
-            if current_date==latest_date:
+            if current_date==self.latest_date:
 
 
                 if current_time=='09:15':
@@ -84,7 +85,7 @@ class ORB_CODE:
                             new_open=new_candles['OPEN']
                             new_date=new_candles['DATE']
                             new_low=new_candles['LOW']
-                            if new_date==latest_date:
+                            if new_date==self.latest_date:
                                 if new_close==first_value_red_candle_close or first_value_red_candle_low==new_low or first_value_red_candle_low==new_close or new_open<=first_value_red_candle_open and new_close<=first_value_red_candle_open and new_open>first_value_red_candle_close or new_open<=first_value_red_candle_close and new_close<=first_value_red_candle_open:
 
 
@@ -145,6 +146,9 @@ class ORB_CODE:
 
                         fourth_level_candle_breakout=[]
                         fourth_level_candle_retest=[]
+                        fourth_level_candle_retest_=None
+
+                        
 
 
                         for retest_candle_ in main_data:
@@ -157,39 +161,157 @@ class ORB_CODE:
                                 if retest_candle_close==original_closing_prices:
 
                                     if retest_candle_close>retest_candle_open:
-                                        if retest_candle_open==orb_high and retest_candle_close>orb_high or retest_candle_close>orb_high and retest_candle_open>orb_high and retest_candle_low<orb_high:
-                                            fourth_level_candle_retest.append(retest_candle_)
-                        if fourth_level_candle_retest:
-                            for levels in fourth_level_candle_retest:
+                                        if retest_candle_open==orb_high and retest_candle_close>orb_high or retest_candle_close>orb_high and retest_candle_open>orb_high and retest_candle_low<orb_high or retest_candle_close>orb_high and retest_candle_open>orb_high and retest_candle_low==orb_high:
 
-                                fourth_time=levels['TIME']
+                                            fourth_level_candle_retest.append(retest_candle_)
+                                           
+                        if fourth_level_candle_retest:
+                            for rtx in fourth_level_candle_retest:
+
+                                timer=rtx['TIME']
+                          
+                            #return
+
+                                                    
+                       
+                            for fourth_level_candle in main_data:
+                                fourth_level_candle_close=fourth_level_candle['CLOSE']
+                                fourth_level_candle_open=fourth_level_candle['OPEN']
+                                fourth_level_candle_date=fourth_level_candle['DATE']
+                                fourth_level_candle_time=fourth_level_candle['TIME']
+                                fourth_level_candle_low=fourth_level_candle['LOW']
+                                fourth_level_candle_high=fourth_level_candle['HIGH']
+                                if current_date==fourth_level_candle_date:
+                                        if fourth_level_candle_time<timer:
+                                            
+
+                                    
+                                            if fourth_level_candle_close>fourth_level_candle_open:
+                                                if fourth_level_candle_close>orb_high and fourth_level_candle_open<orb_high:
+                                                    fourth_level_candle_breakout.append(fourth_level_candle)
+
+                                                    only_candle=fourth_level_candle_breakout[-1]
+
                         else:
                             print('NOT A VALID SETUP')
-                            return
+                        
+
+                        # if only_candle is not None:
+                        #     print(only_candle)
+                        fifth_level_candle_retest=[]
+                        
+
+                        for fifth_level_candle in main_data:
+                            fifth_level_candle_close=fifth_level_candle['CLOSE']
+                            fifth_level_candle_open=fifth_level_candle['OPEN']
+                            fifth_level_candle_date=fifth_level_candle['DATE']
+                            fifth_level_candle_time=fifth_level_candle['TIME']
+                            fifth_level_candle_low=fifth_level_candle['LOW']
+                            fifth_level_candle_high=fifth_level_candle['HIGH']
+                            if current_date==fifth_level_candle_date:
+                                if fifth_level_candle_close==original_closing_prices:
+
+                                    if fifth_level_candle_close>fifth_level_candle_open:
+                                        if fifth_level_candle_close>orb_low and fifth_level_candle_open>orb_low and fifth_level_candle_low<orb_low or fifth_level_candle_close>orb_low and fifth_level_candle_open==orb_low and fifth_level_candle_low<orb_low or fifth_level_candle_close>orb_low and fifth_level_candle_close>orb_low and fifth_level_candle_open>orb_low and fifth_level_candle_low==orb_low:
+                                            fifth_level_candle_retest.append(fifth_level_candle)
+
+
+                        print(fifth_level_candle_retest)
+                        
+                        if fifth_level_candle_retest:
+                            for fifths in fifth_level_candle_retest:
+                                
+                                fif_time=fifths['TIME']
+
+                                fifth_level_candle_breakout=[]
+                                
+                                for fif_breakout_candle in main_data:
+                                    fit_close=fif_breakout_candle['CLOSE']
+                                    fit_time=fif_breakout_candle['TIME']
+                                    fif_date=fif_breakout_candle['DATE']
+                                    fif_low=fif_breakout_candle['LOW']
+                                    fif_high=fif_breakout_candle['HIGH']
+                                    fit_open=fif_breakout_candle['OPEN']
+
+                                    if current_date==fif_date:
+                                        if fit_time<fif_time:
+                                            if fit_close>fit_open:
+                                                if fit_close>orb_low and fit_open<orb_low:
+                                                    fifth_level_candle_breakout.append(fif_breakout_candle)
+
+                                                    
+                                                    fifth_level_candle_breakout.append(fif_breakout_candle)
+
+                                                    final_fifth_value=fifth_level_candle_breakout[-1]
+
+                                if final_fifth_value is not None:
+                                    print(final_fifth_value)
+                        else:
+                            print('NOT A VALID SETUP')
+
+
+
+
+    def bos_structure(self):
+        main_data=self.opening_the_raw_file()
+        closing_prices_set=[]
+        highest_prices=[]
+        main_testing_candle=[]
+        for datas in main_data:
+            close_datas=datas['CLOSE']
+            open_datas=datas['OPEN']
+            high_data=datas['HIGH'] 
+            low_data=datas['LOW']
+            date_data=datas['DATE']
+            time_data=datas['TIME']
+            if self.latest_date==date_data:
+                closing_prices_set.append(close_datas)
+        current_closing=closing_prices_set[-1]
+
+
+
+        for current_data in main_data:
+            current_closes=current_data['CLOSE']
+            current_dates=current_data['DATE']
+            if current_dates==self.latest_date:
+                if current_closing==current_closes:
+                    main_testing_candle.append(current_data)
+
+
+        for curs in main_testing_candle:
+            cu_close=curs['CLOSE']
+            cu_open=curs['OPEN']
+            cu_date=curs['DATE']
+        for laters in main_data:
+            curren_dates=laters['DATE']
+            curren_highs=laters['HIGH']
+            if curren_dates==cu_date:
+                highest_prices.append(curren_highs)
+                
+                
+
+        print(highest_prices)
+        most_high=max(highest_prices)
+        print(most_high)
+        print(current_closing)
+        if current_closing>most_high:
+            print('BOS DETECTED {}'.format(laters))
+                
+                        
+                                                
+
+
+
+
 
                         
-                        for fourth_level_candle in main_data:
-                            fourth_level_candle_close=fourth_level_candle['CLOSE']
-                            fourth_level_candle_open=fourth_level_candle['OPEN']
-                            fourth_level_candle_date=fourth_level_candle['DATE']
-                            fourth_level_candle_time=fourth_level_candle['TIME']
-                            fourth_level_candle_low=fourth_level_candle['LOW']
-                            fourth_level_candle_high=fourth_level_candle['HIGH']
-                            if current_date==fourth_level_candle_date:
-                                    if fourth_level_candle_time<fourth_time:
-                                        
-
-                                
-                                        if fourth_level_candle_close>fourth_level_candle_open:
-                                            if fourth_level_candle_close>orb_high and fourth_level_candle_open<orb_high:
-                                                fourth_level_candle_breakout.append(fourth_level_candle)
-
-                                                only_candle=fourth_level_candle_breakout[-1]
 
 
-                        if only_candle is not None:
-                            print(only_candle)
-                            
+
+
+
+                                    
+
 
 
                         
@@ -214,3 +336,4 @@ class ORB_CODE:
 o=ORB_CODE()
 o.opening_the_raw_file()
 o.analyzing_the_data()
+o.bos_structure()
