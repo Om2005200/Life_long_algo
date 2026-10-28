@@ -9,7 +9,7 @@ import time
 
 class ORB_CODE:
     def __init__(self):
-        self.latest_date="2026-10-26"
+        self.latest_date="2026-10-28"
 
 
     def opening_the_raw_file(self):
@@ -18,12 +18,48 @@ class ORB_CODE:
             return data
 
 
+     
+    def opening_the_order_log(self):
+
+        file_path = r'C:\Users\dasho\fvg_orderbook'
+
+
+        try:
+            with open(file_path, 'r') as x:
+                data = json.load(x)
+
+                # if file somehow contains null
+                if data is None:
+                    data = []
+
+                return data
+
+        except FileNotFoundError:
+
+            print("NO ORDERBOOK FOUND. CREATING NEW FILE")
+
+            with open(file_path, 'w') as x:
+                json.dump([], x, indent=4)
+
+            return []
+
+        except json.JSONDecodeError:
+
+            print("ORDERBOOK CORRUPTED. RESETTING")
+
+            with open(file_path, 'w') as x:
+                json.dump([], x, indent=4)
+
+            return []
+   
+
     
     def analyzing_the_data(self):
         main_data=self.opening_the_raw_file()
        
         orb_candle=[]
         master_closed_data=[]
+        order_log=self.opening_the_order_log()
 
         
         for datas in main_data:
@@ -257,6 +293,7 @@ class ORB_CODE:
         closing_prices_set=[]
         highest_prices=[]
         main_testing_candle=[]
+
         for datas in main_data:
             close_datas=datas['CLOSE']
             open_datas=datas['OPEN']
@@ -278,7 +315,7 @@ class ORB_CODE:
                     main_testing_candle.append(current_data)
 
 
-        for curs in main_testing_candle:
+        for curs in main_testing_candle: 
             cu_close=curs['CLOSE']
             cu_open=curs['OPEN']
             cu_date=curs['DATE']
@@ -287,15 +324,151 @@ class ORB_CODE:
             curren_highs=laters['HIGH']
             if curren_dates==cu_date:
                 highest_prices.append(curren_highs)
-                
+                 
                 
 
-        print(highest_prices)
+        #print(highest_prices)
         most_high=max(highest_prices)
-        print(most_high)
-        print(current_closing)
+        # print(most_high)
+        # print(current_closing)
         if current_closing>most_high:
             print('BOS DETECTED {}'.format(laters))
+
+
+    def fvg_setups(self):
+        main_data=self.opening_the_raw_file()
+        master_close_data=[]
+        master_timing_data=[]
+        master_date_data=[]
+        main_setup=[]
+        fair_value_candle=[]
+        current_close_set=[]
+        recent_low_set=[]
+        master_high_data=[]
+        recent_time=[]
+        order_log=self.opening_the_order_log()
+        for recents in main_data:
+            recent_datses=recents['DATE']
+            recent_close=recents['CLOSE']
+            recent_low=recents['LOW']
+            times=recents['TIME']
+            recent_low_set.append(recent_low)
+            recent_time.append(times)
+
+
+            current_close_set.append(recent_close)
+        #print(current_close_set)
+        current_price=current_close_set[-1]
+        current_low=recent_low_set[-1]
+        current_time_data=recent_time[-1]
+
+        for orders in order_log:
+            order_status=orders['STATUS']
+            old_times=orders['TIME']
+            if order_status=='OPEN':
+                previous_candle_value=orders['PREVIOUS_CANDLE']
+                if previous_candle_value<current_low:
+                    if current_time_data>old_times:
+
+                        print('FVG SETUP DETECTED')
+
+                
+
+
+
+        for datas in main_data:
+            closing_prices=datas['CLOSE']
+            opening_prices=datas['OPEN']
+            timings=datas['TIME']
+            high=datas['HIGH']
+            low=datas['LOW']
+
+            dates=datas['DATE']
+            
+
+
+            if self.latest_date==dates:
+                master_close_data.append(closing_prices)
+                master_timing_data.append(timings)
+                master_date_data.append(dates)
+                master_high_data.append(high)
+                
+
+
+        current_time=master_timing_data[-1]
+
+        current_closing_price=master_close_data[-1]
+        latest_date_=master_date_data[-1]
+
+        for latest_datas in main_data:
+            latest_close=latest_datas['CLOSE']
+            latest_date=latest_datas['DATE']
+            latest_opens=latest_datas['OPEN']
+            latest_high=latest_datas['HIGH']
+            latest_low=latest_datas['LOW']
+            if latest_date_==self.latest_date:
+
+                if current_closing_price==latest_close:
+                    main_setup.append(latest_datas)
+        print(main_setup)
+        for mains in main_setup:
+            main_close=mains['CLOSE']
+            main_open=mains['OPEN']
+            main_dates=mains['DATE']
+            main_time=mains['TIME']
+        revised_master_close_data=master_close_data[0:-1]
+        revised_master_high_data=master_high_data[0:-1]
+
+        max_close_value=max(revised_master_close_data)
+        max_high_value=max(revised_master_high_data)
+
+        if max_close_value>main_close and main_close>max_high_value:
+
+            print('SETUP REJECTED')
+            return
+
+        elif max_close_value<main_close and max_high_value<main_close:
+
+            fair_value_candle.append(main_close)
+
+
+        previous_candle=master_close_data[-2]
+        print(fair_value_candle)
+        main_order_set=[]
+
+
+
+        if fair_value_candle:
+            for fairs in fair_value_candle:
+                fair_close_price=fairs
+
+                new_fair_order={
+                    'CANDLE_1':fair_close_price,
+                    'TIME':current_time,
+                    'STATUS':'OPEN',
+                    'PREVIOUS_CANDLE':previous_candle
+
+                }
+                order_log.append(new_fair_order)
+            with open(r'C:\Users\dasho\fvg_orderbook','w') as hh:
+                data=json.dump(order_log,hh,indent=4)
+                return data
+
+
+        
+        
+                
+
+
+
+
+
+
+
+
+
+
+    
                 
                         
                                                 
@@ -334,6 +507,8 @@ class ORB_CODE:
 
             
 o=ORB_CODE()
+o.opening_the_order_log()
 o.opening_the_raw_file()
 o.analyzing_the_data()
 o.bos_structure()
+o.fvg_setups()
