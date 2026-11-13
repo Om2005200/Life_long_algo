@@ -151,6 +151,24 @@ class ORB_CODE:
                                         if second_low<=orb_low and second_close>orb_low    or second_low<=orb_high and second_close>orb_high and second_open>orb_high:
                                             #print(second_level)
                                             retest_candle.append(second_level)
+                    elif data_close<data_open:
+                        red_retest_candle=[]
+                        for second_level_red in main_data:
+                            red_second_level_date=second_level_red['DATE']
+                            red_second_level_close=second_level_red['CLOSE']
+                            red_second_level_high=second_level_red['HIGH']
+                            red_second_level_low=second_level_red['LOW']
+
+                            red_second_level_open=second_level_red['OPEN']
+                            red_second_level_time=second_level_red['TIME']
+
+
+                            if red_second_level_date==current_date:
+                                if original_closing_prices==red_second_level_close:
+                                    if red_second_level_close<red_second_level_open:
+                                        if red_second_level_high>=orb_low and red_second_level_close<orb_low or red_second_level_high>=orb_high and red_second_level_close<orb_high:
+                                            red_retest_candle.append(second_level_red)
+
 
 
                         ###########################################  LIQUIDITY SWEEP CANDLES ##############
@@ -178,7 +196,26 @@ class ORB_CODE:
                                         if open_low>open_close and open_close>high_close:
                                             third_level_green_candle.append(third_level_candle)
                                             #print(third_level_candle)
+                        third_level_red_candle_=[]
 
+                        for third_level_red_candle in main_data:
+                            third_red_level_close=third_level_red_candle['CLOSE']
+                            third_red_level_open=third_level_red_candle['OPEN']
+                            third_red_level_date=third_level_red_candle['DATE']
+                            third_red_level_time=third_level_red_candle['TIME']
+                            third_red_level_high=third_level_red_candle['HIGH']
+                            third_red_level_low=third_level_red_candle['LOW']
+                            if current_date==third_red_level_date:
+                                if third_red_level_close==original_closing_prices:
+                                    if third_red_level_close<third_red_level_open:
+                                        open_high=third_red_level_high-third_red_level_open
+                                        open_close_=third_red_level_open-third_red_level_close
+                                        low_close=third_red_level_close-third_red_level_low
+                                        if open_high>open_close and open_close_>low_close:
+                                            third_level_red_candle_.append(third_level_red_candle)
+
+
+                                            
 
                         fourth_level_candle_breakout=[]
                         fourth_level_candle_retest=[]
