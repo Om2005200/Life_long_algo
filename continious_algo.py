@@ -196,23 +196,7 @@ class ORB_CODE:
                                         if open_low>open_close and open_close>high_close:
                                             third_level_green_candle.append(third_level_candle)
                                             #print(third_level_candle)
-                        third_level_red_candle_=[]
-
-                        for third_level_red_candle in main_data:
-                            third_red_level_close=third_level_red_candle['CLOSE']
-                            third_red_level_open=third_level_red_candle['OPEN']
-                            third_red_level_date=third_level_red_candle['DATE']
-                            third_red_level_time=third_level_red_candle['TIME']
-                            third_red_level_high=third_level_red_candle['HIGH']
-                            third_red_level_low=third_level_red_candle['LOW']
-                            if current_date==third_red_level_date:
-                                if third_red_level_close==original_closing_prices:
-                                    if third_red_level_close<third_red_level_open:
-                                        open_high=third_red_level_high-third_red_level_open
-                                        open_close_=third_red_level_open-third_red_level_close
-                                        low_close=third_red_level_close-third_red_level_low
-                                        if open_high>open_close and open_close_>low_close:
-                                            third_level_red_candle_.append(third_level_red_candle)
+                        
 
 
                                             
@@ -267,7 +251,61 @@ class ORB_CODE:
 
                         else:
                             print('NOT A VALID SETUP')
+                        third_level_red_candle_=[]
+                        third_level_retest_red_candle=[]
                         
+                        for third_level_red_candle in main_data:
+                            third_red_level_close=third_level_red_candle['CLOSE']
+                            third_red_level_open=third_level_red_candle['OPEN']
+                            third_red_level_date=third_level_red_candle['DATE']
+                            third_red_level_time=third_level_red_candle['TIME']
+                            third_red_level_high=third_level_red_candle['HIGH']
+                            third_red_level_low=third_level_red_candle['LOW']
+                            if current_date==third_red_level_date:
+                                if third_red_level_close==original_closing_prices:
+                                    if third_red_level_close<third_red_level_open:
+                                        open_high=third_red_level_high-third_red_level_open
+                                        open_close_=third_red_level_open-third_red_level_close
+                                        low_close=third_red_level_close-third_red_level_low
+                                        if open_high>open_close and open_close_>low_close:
+                                            third_level_red_candle_.append(third_level_red_candle)
+
+
+                        if third_level_red_candle:
+                            for th in third_level_red_candle:
+                                time_third=th['TIME']
+
+                        for third_level_red_retest_candle in main_data:
+                            retest_red_candle_close=third_level_red_retest_candle['CLOSE']
+                            retest_red_candle_open=third_level_red_retest_candle['OPEN']
+                            retest_red_candle_date=third_level_red_retest_candle['DATE']
+                            retest_red_candle_high=third_level_red_retest_candle['HIGH']
+                            retest_red_candle_low=third_level_red_retest_candle['LOW']
+                            retest_time=third_level_red_retest_candle['TIME']
+                            if current_date==retest_red_candle_date:
+                                if retest_time>time_third:
+
+                                    if retest_red_candle_close==original_closing_prices:
+                                        if retest_red_candle_close<retest_red_candle_open:
+                                            if retest_red_candle_open==orb_high and retest_red_candle_close<orb_high or retest_red_candle_open>orb_high and retest_red_candle_low>orb_high or retest_red_candle_close<orb_high and retest_red_candle_open>orb_high and retest_red_candle_low==orb_high or retest_red_candle_low==orb_high and retest_red_candle_open<orb_high and retest_red_candle_close<orb_high:
+                                                third_level_retest_red_candle.append(third_level_red_retest_candle)
+
+
+                                                print('THIS IS A VALID LIQ AND RETEST SETUP')
+                                else:
+                                    print('NOT A VALID SETUP')   
+
+
+
+                                    
+                                                 
+
+
+                        
+
+
+
+
 
                         # if only_candle is not None:
                         #     print(only_candle)
